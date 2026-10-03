@@ -15,20 +15,6 @@ async function listUsers() {
 }
 
 /**
- * validar por usuario e senha
- */
-async function validateUser(username, password) {
-    const user = await prisma.users.findFirst({
-        where: {
-            username,
-            password
-        }
-    });
-
-    return !!user;
-}
-
-/**
  * função de criar usuario
  */
 async function createUser(data) {
@@ -87,7 +73,6 @@ async function validateByUsername(username) {
 
 export {
     listUsers,
-    validateUser,
     createUser,
     validateByEmail,
     validateByUsername,
