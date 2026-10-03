@@ -35,7 +35,8 @@ async function signUpUser(username, email, password) {
             email,
             password: hashpassword
         });
-        return { ...user, id: user.id.toString() };
+        const { password: _password, ...safeUser } = user;
+        return { ...safeUser, id: user.id.toString() };
     } catch (issue) {
         console.error(issue);
         const error = new Error(
