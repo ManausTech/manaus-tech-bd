@@ -3,6 +3,12 @@ import { validateByEmail, validateByUsername, createUser } from '../../shared/us
 
 
 async function signUpUser(username, email, password) {
+    if (typeof username === "string") {
+        username = username.trim();
+    }
+    if (typeof email === "string") {
+        email = email.trim().toLowerCase();
+    }
     if (!username || !email || !password) {
         const error = new Error("Campos nome de usuario, email e senha são obrigatorios");
         error.statusCode = 400;
