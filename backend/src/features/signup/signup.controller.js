@@ -1,13 +1,13 @@
-import signIn from "./signup.service.js";
+import signUpUser from "./signup.service.js";
 
-async function signinController(req, res) {
+async function signupController(req, res) {
     try {
-        const { email, password } = req.body;
-        const result = await signIn(email, password);
-        res.status(200).json(result);
+        const { username, email, password } = req.body ?? {};
+        const user = await signUpUser(username, email, password);
+        res.status(201).json(user);
     } catch (error) {
         res.status(error.statusCode || 500).json({ message: error.message });
     }
+}
 
-
-export default signinController;
+export default signupController;

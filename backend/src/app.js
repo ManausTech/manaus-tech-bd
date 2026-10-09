@@ -1,6 +1,6 @@
 import express from "express";
-import signUpRouter from "./src/features/signup/signup.route.js";
-import signInRouter from "./src/features/signin/signin.route.js";
+import signUpRouter from "./features/signup/signup.route.js";
+import signInRouter from "./features/signin/signin.route.js";
 
 const app = express();
 

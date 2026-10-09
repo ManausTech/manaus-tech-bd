@@ -61,8 +61,8 @@ describe("signIn", () => {
         mockFindByEmail.mockResolvedValue(null);
 
         await expect(signIn("naoexiste@email.com", "123456")).rejects.toMatchObject({
-            statusCode: 404,
-            message: "Email não esta associado a uma conta"
+                        statusCode: 401,
+            message: "Email ou senha inválidos"
         });
     });
 
@@ -78,8 +78,8 @@ describe("signIn", () => {
         mockComparePassword.mockResolvedValue(false);
 
         await expect(signIn("joao@email.com", "senha-errada")).rejects.toMatchObject({
-            statusCode: 409,
-            message: "Senha incorreta"
+                       statusCode: 401,
+            message: "Email ou senha inválidos"
         });
     });
 });

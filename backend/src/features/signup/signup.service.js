@@ -3,9 +3,25 @@ import { validateByEmail, validateByUsername, createUser } from '../../shared/us
 
 
 async function signUpUser(username, email, password) {
+    if (typeof username === "string") {
+        username = username.trim();
+    }
+    if (typeof email === "string") {
+        email = email.trim().toLowerCase();
+    }
     if (!username || !email || !password) {
         const error = new Error("Campos nome de usuario, email e senha são obrigatorios");
-        error.statusCode = 500;
+        error.statusCode = 400;
+        throw error;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        const error = new Error("Email inválido");
+        error.statusCode = 400;
+        throw error;
+    }
+    if (typeof password !== "string" || password.length < 6) {
+        const error = new Error("A senha deve ter pelo menos 6 caracteres");
+        error.statusCode = 400;
         throw error;
     }
     if (await validateByUsername(username)) {
@@ -25,10 +41,14 @@ async function signUpUser(username, email, password) {
             email,
             password: hashpassword
         });
-        return { ...user, id: user.id.toString() };
+        const { password: _password, ...safeUser } = user;
+        return { ...safeUser, id: user.id.toString() };
     } catch (issue) {
-        const error = new Error("Falha ao comunicar com banco de dados");
-        error.statusCode = 509;
+        console.error(issue);
+        const error = new Error(
+            issue.code === "P2002" ? "Usuario ou email ja cadastrado" : "Falha ao comunicar com banco de dados"
+        );
+        error.statusCode = issue.code === "P2002" ? 409 : 500;
         throw error;
     }
 }
