@@ -1,20 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import express from "express";
+import signUpRouter from "./features/signup/signup.route.js";
+import signInRouter from "./features/signin/signin.route.js";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const app = express();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+//Rotas publicas
+app.use('/signup', signUpRouter);
+app.use('/signin', signInRouter);
+
+//Rotas privadas (usar authMiddleWare aqui quando existirem)
+
+
+app.listen(PORT, () => {
+    console.log(`servidor iniciado em http://localhost:3000`);
 });
