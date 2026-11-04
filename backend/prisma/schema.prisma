@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model users {
+  id       BigInt  @id @default(autoincrement())
+  username String? @unique @db.VarChar(160)
+  email    String  @unique @db.VarChar(160)
+  password String  @db.VarChar(250)
+  status   estatus @default(ACTIVE)
+}
+
+model answers {
+  id                                         BigInt    @id @default(autoincrement())
+  chapter_id                                 BigInt
+  intent                                     String?   @db.VarChar(100)
+  keywords                                   String[]
+  next_chapter_id                            BigInt?
+  create_at                                  DateTime  @default(now()) @db.Timestamptz(6)
+  chapters_answers_chapter_idTochapters      chapters  @relation("answers_chapter_idTochapters", fields: [chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_answer_chapter")
+  chapters_answers_next_chapter_idTochapters chapters? @relation("answers_next_chapter_idTochapters", fields: [next_chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_answer_next_chapter")
+}
+
+model chapters {
+  id                                           BigInt     @id @default(autoincrement())
+  episode_id                                   BigInt
+  video_url                                    String
+  description                                  String?
+  question                                     String?
+  create_at                                    DateTime   @default(now()) @db.Timestamptz(6)
+  update_at                                    DateTime   @default(now()) @db.Timestamptz(6)
+  answers_answers_chapter_idTochapters         answers[]  @relation("answers_chapter_idTochapters")
+  answers_answers_next_chapter_idTochapters    answers[]  @relation("answers_next_chapter_idTochapters")
+  episodes_chapters_episode_idToepisodes       episodes   @relation("chapters_episode_idToepisodes", fields: [episode_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chapter_episode")
+  episodes_episodes_first_chapter_idTochapters episodes[] @relation("episodes_first_chapter_idTochapters")
+}
+
+model episodes {
+  id                                           BigInt     @id @default(autoincrement())
+  name                                         String     @db.VarChar(150)
+  description                                  String?
+  first_chapter_id                             BigInt?
+  create_at                                    DateTime   @default(now()) @db.Timestamptz(6)
+  update_at                                    DateTime   @default(now()) @db.Timestamptz(6)
+  status                                       estatus    @default(ACTIVE)
+  chapters_chapters_episode_idToepisodes       chapters[] @relation("chapters_episode_idToepisodes")
+  chapters_episodes_first_chapter_idTochapters chapters?  @relation("episodes_first_chapter_idTochapters", fields: [first_chapter_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_episode_first_chapter")
+}
+
+enum estatus {
+  ACTIVE
+  INACTIVE
+}
